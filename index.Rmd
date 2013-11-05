@@ -1,0 +1,268 @@
+---
+title       : Analyse Exploratoire de Données
+subtitle    : M2 ECD | SISE
+author      : Jairo Cugliari
+job         : Université Lumière Lyon 2
+license     : by-nc-sa
+github      : {user: cugliari, repo: xplora}
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # {solarized_light}
+widgets     : [mathjax, bootstrap] # {quiz}
+mode        : selfcontained # {standalone, draft}
+--- 
+
+<style>
+iframe{
+  height:450px;
+  width:900px;
+  margin:auto auto;
+}
+
+iframe {height: 300px; width: 900px}
+</style>
+
+```{r message = F, warning = F, error = F, echo = F, tidy = F, cache = F}
+require(knitr)
+opts_chunk$set(
+  message = F,
+  warning = F,
+  error = F,
+  tidy = F,
+  cache = F,
+  fig.width = 11,
+  fig.height = 5
+)
+```
+
+Ex 1. Le quartet d'Anscombe
+---------------------
+
+```{r echo=2:3}
+setwd("~/Dropbox/cours/stat-exploratoire/cours/codes/")
+quartet <- read.table('quartet.txt', header = TRUE)            
+quartet
+```
+
+---
+
+Le quartet d'Anscombe
+---------------------
+
+``` 
+Moyenne  des x : 9.0  ~~   [mean(x)]  
+Variance des x : 11   ~~     [var(x)]
+Moyenne  des y : 7.50
+Variance des y : 4.12
+Correlation entre x e y : 0.816  ~~ [ cor(x, y) ou cor(data) ]
+Regression linéaire : y = 3 + 0.5 x  ~~ [ lm(y~x, data) ]
+```
+Les mêmes valeurs de résumé ==> les mêmes données 
+
+---
+
+```{r fig.align='center', fig.height=5.8, fig.width=5.8}
+par(mfcol = c(2, 2), mai = c(.3, .3, .3, .3))
+plot(quartet$x1, quartet$y1, pch = 19,
+     panel.last = abline(lm(y1 ~ x1, data = quartet)) )
+plot(quartet$x2, quartet$y2, pch = 19,
+     panel.last = abline(lm(y2 ~ x2, data = quartet)) )
+plot(quartet$x3, quartet$y3, pch = 19,
+     panel.last = abline(lm(y3 ~ x3, data = quartet)) )
+plot(quartet$x4, quartet$y4, pch = 19,
+     panel.last = abline(lm(y4 ~ x4, data = quartet)) )
+```
+
+---
+
+Ex 2. Les données barley
+---------------------
+
+```{r echo = FALSE, fig.align='center', fig.width=10}
+library(lattice)
+
+dotplot(variety ~ yield | site, 
+        data = barley, groups = year,
+        pch = 19, aspect = .5)
+```
+
+
+---
+## Plan
+
+1. Données univariées
+2. Données bivariées
+3. Données trivariées 
+4. Données hypervariées
+
+--- .class #id 
+
+## Diagrammes à tiges et à feuilles
+
+![alt text](figure/72.png)
+
+---
+
+## 1. Données univariées 
+
+```{r}
+dim(singer)
+head(singer)
+```
+
+---
+
+```{r}
+boxplot(2.54 * singer$height, horizontal=TRUE)
+```
+
+---
+```{r}
+stem(2.54 * singer$height, scale=.8)
+```
+
+--- 
+
+## 1. Données univariées : q-plot
+
+$$q(f) : f - quantile$$
+
+---
+
+```{r echo = FALSE, fig.align = 'center', fig.width = 10}
+qqmath(~ 2.54 * sort(singer$height),
+       distribution = qunif, pch = 19,       
+       panel = function(x, ...) {
+         panel.qqmath(x, ...)
+       },
+       aspect = 1, 
+       xlab = "f-value",
+       ylab = "Singer Height (cms)")
+```
+
+---
+
+```{r echo = FALSE, fig.align = 'center', fig.width = 15}
+qqmath(~ height*2.54 | voice.part,
+       distribution = qunif,
+       data=singer,
+       pch = 19,       
+       panel = function(x, ...) {
+         panel.qqmath(x, ...)
+         panel.grid(col = 1, lty = 2)
+       },
+       layout=c(4, 2), 
+       aspect=1,
+       xlab = "f-value",
+       ylab="Height (cms)")
+```
+
+---
+
+## 1. Données univariées : qq-plot 
+
+```{r echo = FALSE, fig.align = 'center', fig.width = 15}
+qq_b_t <- qq(voice.part ~ 2.54 * height, aspect = 1, 
+             data = singer, pch = 19,
+             subset = (voice.part == "Bass 2" | 
+                         voice.part == "Tenor 1"),
+             xlab = "Tenor 1 Height (cms)", lwd = 2,
+             ylab = "Base 2 Height (cms)")
+plot(qq_b_t)
+```
+
+
+
+---
+
+## 1. Données univariées :  m-d plot
+
+```{r echo = FALSE, fig.align = 'center', fig.width = 15}
+tmd(qq_b_t)
+```
+
+---
+
+## 1. Données univariées :  qq plots
+
+```{r echo = FALSE, fig.align = 'center', fig.width = 15}
+pr <- seq(0.05, 0.95, 0.05)
+vparts <- levels(singer$voice.part)
+
+# Form matrix, qmat, from quantiles of the various voice parts.  Each
+# voice part goes in a column.  Initially, qmat=NULL.  We then add columns
+# to qmat using cbind.
+qmat <- NULL
+for( i in seq(length(vparts))) {
+    # current voice part
+    this.part <- vparts[i]
+
+    # quantiles of current voice part
+    q <- with(singer, quantile(height[voice.part==this.part], probs=pr))
+
+    # add column to qmat
+    qmat <- cbind(qmat, q)
+}
+
+# Label columns of qmat using names of voice parts.
+colnames(qmat) <- vparts
+
+qdf <- as.data.frame(qmat)
+
+plt <- splom(~qdf, pch = 20,
+             axis.text.cex=0.6,
+             varname.cex=0.8,
+             main="Pairwise Quantile Plots",
+             pscales=0,
+             panel = function(x,y,...){
+                 panel.splom(x,y,...)
+                 panel.abline(0,1,col="grey")
+             })
+plt
+```
+
+---
+
+
+```{r echo = FALSE, fig.align = 'center', fig.width = 15}
+h_alto1 <- 2.54 * sort(singer$height[singer$voice.part=="Alto 1"])
+qqmath(~ h_alto1, pch = 19,
+       distribution = qunif,
+       prepanel = prepanel.qqmathline,
+       panel = function(x, ...) {
+         panel.qqmathline(x, ...)
+         panel.qqmath(x, ...)
+       },
+       aspect = 1, 
+       ylim = c(145, 185),
+       xlab = "f-value",
+       ylab = "Alto 1 Height (inches)")
+```
+
+---
+
+```{r echo = FALSE, fig.align = 'center', fig.width = 15}
+xyplot(qnorm(ppoints(h_alto1), mean(h_alto1), sd(h_alto1) ) ~ ppoints(h_alto1), 
+       panel = function(x, y){
+         panel.grid()
+         panel.xyplot(x, y, type = "l", lwd = 2)
+       },
+       ylim = c(145, 185),
+       aspect = 1,
+       xlab = "f-value", 
+       ylab = "Normal Quantile Function")
+```
+
+---
+
+```{r echo = FALSE, fig.align = 'center', fig.width = 15}
+qqmath(~ 2.54 * height | voice.part,
+       data=singer, pch = 19, 
+       prepanel = prepanel.qqmathline,
+       panel = function(x, ...) {
+         panel.qqmathline(x, ...)
+         panel.qqmath(x, ...)
+       },
+       layout=c(4, 2), aspect=1, 
+       xlab = "Unit Normal Quantile",
+       ylab="Height (cms)")
