@@ -170,7 +170,7 @@ stem(2.54 * singer$height, scale=.8)
 
 ## 1. Données univariées : q-plot
 
-$$q(f) : f - quantile$$
+$ q(f) : f $
 
 ---
 
