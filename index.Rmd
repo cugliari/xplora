@@ -12,28 +12,6 @@ widgets     : [mathjax, bootstrap] # {quiz}
 mode        : selfcontained # {standalone, draft}
 --- 
 
-<style>
-iframe{
-  height:450px;
-  width:900px;
-  margin:auto auto;
-}
-
-iframe {height: 300px; width: 900px}
-</style>
-
-```{r message = F, warning = F, error = F, echo = F, tidy = F, cache = F}
-require(knitr)
-opts_chunk$set(
-  message = F,
-  warning = F,
-  error = F,
-  tidy = F,
-  cache = F,
-  fig.width = 11,
-  fig.height = 5
-)
-```
 
 Ex 1. Le quartet d'Anscombe
 ---------------------
@@ -54,8 +32,8 @@ Moyenne  des x : 9.0  ~~   [mean(x)]
 Variance des x : 11   ~~     [var(x)]
 Moyenne  des y : 7.50
 Variance des y : 4.12
-Correlation entre x e y : 0.816  ~~ [ cor(x, y) ou cor(data) ]
-Regression linéaire : y = 3 + 0.5 x  ~~ [ lm(y~x, data) ]
+Corrélation entre x e y : 0.816  ~~ [ cor(x, y) ou cor(data) ]
+Régression linéaire : y = 3 + 0.5 x  ~~ [ lm(y~x, data) ]
 ```
 Les mêmes valeurs de résumé ==> les mêmes données 
 
@@ -86,7 +64,6 @@ dotplot(variety ~ yield | site,
         pch = 19, aspect = .5)
 ```
 
-
 ---
 ## Plan
 
@@ -94,6 +71,11 @@ dotplot(variety ~ yield | site,
 2. Données bivariées
 3. Données trivariées 
 4. Données hypervariées
+
+
+#### Biblio
+
+**Visualizing Data** (1993) William S. Cleveland [codes & data](http://www.stat.purdue.edu/~wsc/visualizing.html)
 
 --- .class #id 
 
@@ -125,7 +107,31 @@ stem(2.54 * singer$height, scale=.8)
 
 ## 1. Données univariées : q-plot
 
-$ q(f) : f $
+Le quantile $x_f$ d'une variable aléatoire $X$ est $x_f = \lbrace \inf x : F(x) \leq f \rbrace$ où $F$ est la fonction de répartition de $X$.
+
+Pour un échantillon `$X_1, \ldots, X_n$` de $X$ la fonction de répartition empirique est 
+`\[
+   \hat F_n(x) = \sum_{j=1}^n I_{\{X_j \leq x\}}
+\]`.
+Alors, la version empirique de $x_f$ on la note $q(f)$.
+* Grâce au Théorème de Glivenko-Cantelli, on sait que `$\sup_x \|\hat F_n(x) - F(x)\| \mapsto 0$` donc les quantiles empiriques sont une estimation raisonnable des quantiles théoriques.
+
+---
+
+#### Construction des $q(f)$
+
+Soit 
+* `$X_{(j)}, j= 1, \ldots, X_{(n)}$` l'échantillon ordonné, i.e. 
+`$X_{(1)} \leq X_{(2)} \leq \ldots \leq X_{(n)}$`.
+* les quantités discrètes $f_j = \frac{j - 0.5}{n}$ pour $j=1, \ldots, n$.
+
+Alors, 
+* on considère `$q(f_j) = X_{(j)}}$` 
+* les restantes valeurs de la courbe $q(f)$ sont obtenus par interpolation linéaire.
+
+#### q-plot
+
+C'est la réprésentation de $x_{(j)}$ en fonction de $f$.
 
 ---
 
@@ -160,6 +166,17 @@ qqmath(~ height*2.54 | voice.part,
 ---
 
 ## 1. Données univariées : qq-plot 
+
+* 2 ensembles des données univariées: 
+ * `$X_1, \ldots, X_n$`
+ * `$Y_1, \ldots, X_m$`
+* Si 
+ * $m = n$ alors les $f_j$ sont obtenues comme avant
+ * $m \le n$ alors on obtient les $f_j$ sur $Y$ et pour $X$ on interpole.
+
+Pour le diagramme quantile-quantile on répresente les quantiles d'une des variables en fonction des quantiles de l'autre. 
+
+---
 
 ```{r echo = FALSE, fig.align = 'center', fig.width = 15}
 qq_b_t <- qq(voice.part ~ 2.54 * height, aspect = 1, 

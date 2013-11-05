@@ -12,25 +12,13 @@ widgets     : [mathjax, bootstrap] # {quiz}
 mode        : selfcontained # {standalone, draft}
 --- 
 
-<style>
-iframe{
-  height:450px;
-  width:900px;
-  margin:auto auto;
-}
-
-iframe {height: 300px; width: 900px}
-</style>
-
-
-
 
 Ex 1. Le quartet d'Anscombe
 ---------------------
 
 
 ```r
-quartet <- read.table('quartet.txt', header = TRUE)            
+quartet <- read.table("quartet.txt", header = TRUE)
 quartet
 ```
 
@@ -60,8 +48,8 @@ Moyenne  des x : 9.0  ~~   [mean(x)]
 Variance des x : 11   ~~     [var(x)]
 Moyenne  des y : 7.50
 Variance des y : 4.12
-Correlation entre x e y : 0.816  ~~ [ cor(x, y) ou cor(data) ]
-Regression linéaire : y = 3 + 0.5 x  ~~ [ lm(y~x, data) ]
+Corrélation entre x e y : 0.816  ~~ [ cor(x, y) ou cor(data) ]
+Régression linéaire : y = 3 + 0.5 x  ~~ [ lm(y~x, data) ]
 ```
 Les mêmes valeurs de résumé ==> les mêmes données 
 
@@ -69,18 +57,14 @@ Les mêmes valeurs de résumé ==> les mêmes données
 
 
 ```r
-par(mfcol = c(2, 2), mai = c(.3, .3, .3, .3))
-plot(quartet$x1, quartet$y1, pch = 19,
-     panel.last = abline(lm(y1 ~ x1, data = quartet)) )
-plot(quartet$x2, quartet$y2, pch = 19,
-     panel.last = abline(lm(y2 ~ x2, data = quartet)) )
-plot(quartet$x3, quartet$y3, pch = 19,
-     panel.last = abline(lm(y3 ~ x3, data = quartet)) )
-plot(quartet$x4, quartet$y4, pch = 19,
-     panel.last = abline(lm(y4 ~ x4, data = quartet)) )
+par(mfcol = c(2, 2), mai = c(0.3, 0.3, 0.3, 0.3))
+plot(quartet$x1, quartet$y1, pch = 19, panel.last = abline(lm(y1 ~ x1, data = quartet)))
+plot(quartet$x2, quartet$y2, pch = 19, panel.last = abline(lm(y2 ~ x2, data = quartet)))
+plot(quartet$x3, quartet$y3, pch = 19, panel.last = abline(lm(y3 ~ x3, data = quartet)))
+plot(quartet$x4, quartet$y4, pch = 19, panel.last = abline(lm(y4 ~ x4, data = quartet)))
 ```
 
-<img src="figure/unnamed-chunk-3.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" style="display: block; margin: auto;" />
+<img src="figure/unnamed-chunk-2.png" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" style="display: block; margin: auto;" />
 
 
 ---
@@ -88,8 +72,7 @@ plot(quartet$x4, quartet$y4, pch = 19,
 Ex 2. Les données barley
 ---------------------
 
-<img src="figure/unnamed-chunk-4.png" title="plot of chunk unnamed-chunk-4" alt="plot of chunk unnamed-chunk-4" style="display: block; margin: auto;" />
-
+<img src="figure/unnamed-chunk-3.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" style="display: block; margin: auto;" />
 
 
 ---
@@ -99,6 +82,11 @@ Ex 2. Les données barley
 2. Données bivariées
 3. Données trivariées 
 4. Données hypervariées
+
+
+#### Biblio
+
+**Visualizing Data** (1993) William S. Cleveland [codes & data](http://www.stat.purdue.edu/~wsc/visualizing.html)
 
 --- .class #id 
 
@@ -138,16 +126,16 @@ head(singer)
 
 
 ```r
-boxplot(2.54 * singer$height, horizontal=TRUE)
+boxplot(2.54 * singer$height, horizontal = TRUE)
 ```
 
-![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6.png) 
+![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5.png) 
 
 
 ---
 
 ```r
-stem(2.54 * singer$height, scale=.8)
+stem(2.54 * singer$height, scale = 0.8)
 ```
 
 ```
@@ -170,7 +158,36 @@ stem(2.54 * singer$height, scale=.8)
 
 ## 1. Données univariées : q-plot
 
-$ q(f) : f $
+Le quantile $x_f$ d'une variable aléatoire $X$ est $x_f = \lbrace \inf x : F(x) \leq f \rbrace$ où $F$ est la fonction de répartition de $X$.
+
+Pour un échantillon `$X_1, \ldots, X_n$` de $X$ la fonction de répartition empirique est 
+`\[
+   \hat F_n(x) = \sum_{j=1}^n I_{\{X_j \leq x\}}
+\]`.
+Alors, la version empirique de $x_f$ on la note $q(f)$.
+* Grâce au Théorème de Glivenko-Cantelli, on sait que `$\sup_x \|\hat F_n(x) - F(x)\| \mapsto 0$` donc les quantiles empiriques sont une estimation raisonnable des quantiles théoriques.
+
+---
+
+#### Construction des $q(f)$
+
+Soit 
+* `$X_{(j)}, j= 1, \ldots, X_{(n)}$` l'échantillon ordonné, i.e. 
+`$X_{(1)} \leq X_{(2)} \leq \ldots \leq X_{(n)}$`.
+* les quantités discrètes $f_j = \frac{j - 0.5}{n}$ pour $j=1, \ldots, n$.
+
+Alors, 
+* on considère `$q(f_j) = X_{(j)}}$` 
+* les restantes valeurs de la courbe $q(f)$ sont obtenus par interpolation linéaire.
+
+#### q-plot
+
+C'est la réprésentation de $x_{(j)}$ en fonction de $f$.
+
+---
+
+<img src="figure/unnamed-chunk-7.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" style="display: block; margin: auto;" />
+
 
 ---
 
@@ -179,14 +196,20 @@ $ q(f) : f $
 
 ---
 
-<img src="figure/unnamed-chunk-9.png" title="plot of chunk unnamed-chunk-9" alt="plot of chunk unnamed-chunk-9" style="display: block; margin: auto;" />
+## 1. Données univariées : qq-plot 
 
+* 2 ensembles des données univariées: 
+ * `$X_1, \ldots, X_n$`
+ * `$Y_1, \ldots, X_m$`
+* Si 
+ * $m = n$ alors les $f_j$ sont obtenues comme avant
+ * $m \le n$ alors on obtient les $f_j$ sur $Y$ et pour $X$ on interpole.
+
+Pour le diagramme quantile-quantile on répresente les quantiles d'une de variables en fonction des quantiles de l'autre. 
 
 ---
 
-## 1. Données univariées : qq-plot 
-
-<img src="figure/unnamed-chunk-10.png" title="plot of chunk unnamed-chunk-10" alt="plot of chunk unnamed-chunk-10" style="display: block; margin: auto;" />
+<img src="figure/unnamed-chunk-9.png" title="plot of chunk unnamed-chunk-9" alt="plot of chunk unnamed-chunk-9" style="display: block; margin: auto;" />
 
 
 
@@ -195,18 +218,23 @@ $ q(f) : f $
 
 ## 1. Données univariées :  m-d plot
 
-<img src="figure/unnamed-chunk-11.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" style="display: block; margin: auto;" />
+<img src="figure/unnamed-chunk-10.png" title="plot of chunk unnamed-chunk-10" alt="plot of chunk unnamed-chunk-10" style="display: block; margin: auto;" />
 
 
 ---
 
 ## 1. Données univariées :  qq plots
 
-<img src="figure/unnamed-chunk-12.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" style="display: block; margin: auto;" />
+<img src="figure/unnamed-chunk-11.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" style="display: block; margin: auto;" />
 
 
 ---
 
+
+<img src="figure/unnamed-chunk-12.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" style="display: block; margin: auto;" />
+
+
+---
 
 <img src="figure/unnamed-chunk-13.png" title="plot of chunk unnamed-chunk-13" alt="plot of chunk unnamed-chunk-13" style="display: block; margin: auto;" />
 
@@ -214,8 +242,3 @@ $ q(f) : f $
 ---
 
 <img src="figure/unnamed-chunk-14.png" title="plot of chunk unnamed-chunk-14" alt="plot of chunk unnamed-chunk-14" style="display: block; margin: auto;" />
-
-
----
-
-<img src="figure/unnamed-chunk-15.png" title="plot of chunk unnamed-chunk-15" alt="plot of chunk unnamed-chunk-15" style="display: block; margin: auto;" />

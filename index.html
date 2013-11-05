@@ -52,22 +52,10 @@
     <!-- SLIDES -->
       <slide class="" id="slide-1" style="background:;">
   <hgroup>
-    
+    <h2>Ex 1. Le quartet d&#39;Anscombe</h2>
   </hgroup>
   <article>
-    <style>
-iframe{
-  height:450px;
-  width:900px;
-  margin:auto auto;
-}
-
-iframe {height: 300px; width: 900px}
-</style>
-
-<h2>Ex 1. Le quartet d&#39;Anscombe</h2>
-
-<pre><code class="r">quartet &lt;- read.table(&#39;quartet.txt&#39;, header = TRUE)            
+    <pre><code class="r">quartet &lt;- read.table(&quot;quartet.txt&quot;, header = TRUE)
 quartet
 </code></pre>
 
@@ -98,8 +86,8 @@ quartet
 Variance des x : 11   ~~     [var(x)]
 Moyenne  des y : 7.50
 Variance des y : 4.12
-Correlation entre x e y : 0.816  ~~ [ cor(x, y) ou cor(data) ]
-Regression linéaire : y = 3 + 0.5 x  ~~ [ lm(y~x, data) ]
+Corrélation entre x e y : 0.816  ~~ [ cor(x, y) ou cor(data) ]
+Régression linéaire : y = 3 + 0.5 x  ~~ [ lm(y~x, data) ]
 </code></pre>
 
 <p>Les mêmes valeurs de résumé ==&gt; les mêmes données </p>
@@ -113,18 +101,14 @@ Regression linéaire : y = 3 + 0.5 x  ~~ [ lm(y~x, data) ]
     
   </hgroup>
   <article>
-    <pre><code class="r">par(mfcol = c(2, 2), mai = c(.3, .3, .3, .3))
-plot(quartet$x1, quartet$y1, pch = 19,
-     panel.last = abline(lm(y1 ~ x1, data = quartet)) )
-plot(quartet$x2, quartet$y2, pch = 19,
-     panel.last = abline(lm(y2 ~ x2, data = quartet)) )
-plot(quartet$x3, quartet$y3, pch = 19,
-     panel.last = abline(lm(y3 ~ x3, data = quartet)) )
-plot(quartet$x4, quartet$y4, pch = 19,
-     panel.last = abline(lm(y4 ~ x4, data = quartet)) )
+    <pre><code class="r">par(mfcol = c(2, 2), mai = c(0.3, 0.3, 0.3, 0.3))
+plot(quartet$x1, quartet$y1, pch = 19, panel.last = abline(lm(y1 ~ x1, data = quartet)))
+plot(quartet$x2, quartet$y2, pch = 19, panel.last = abline(lm(y2 ~ x2, data = quartet)))
+plot(quartet$x3, quartet$y3, pch = 19, panel.last = abline(lm(y3 ~ x3, data = quartet)))
+plot(quartet$x4, quartet$y4, pch = 19, panel.last = abline(lm(y4 ~ x4, data = quartet)))
 </code></pre>
 
-<p><img src="figure/unnamed-chunk-3.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" style="display: block; margin: auto;" /></p>
+<p><img src="figure/unnamed-chunk-2.png" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" style="display: block; margin: auto;" /></p>
 
   </article>
   <!-- Presenter Notes -->
@@ -135,7 +119,7 @@ plot(quartet$x4, quartet$y4, pch = 19,
     <h2>Ex 2. Les données barley</h2>
   </hgroup>
   <article>
-    <p><img src="figure/unnamed-chunk-4.png" title="plot of chunk unnamed-chunk-4" alt="plot of chunk unnamed-chunk-4" style="display: block; margin: auto;" /></p>
+    <p><img src="figure/unnamed-chunk-3.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" style="display: block; margin: auto;" /></p>
 
   </article>
   <!-- Presenter Notes -->
@@ -152,6 +136,10 @@ plot(quartet$x4, quartet$y4, pch = 19,
 <li>Données trivariées </li>
 <li>Données hypervariées</li>
 </ol>
+
+<h4>Biblio</h4>
+
+<p><strong>Visualizing Data</strong> (1993) William S. Cleveland <a href="http://www.stat.purdue.edu/%7Ewsc/visualizing.html">codes &amp; data</a></p>
 
   </article>
   <!-- Presenter Notes -->
@@ -200,10 +188,10 @@ plot(quartet$x4, quartet$y4, pch = 19,
     
   </hgroup>
   <article>
-    <pre><code class="r">boxplot(2.54 * singer$height, horizontal=TRUE)
+    <pre><code class="r">boxplot(2.54 * singer$height, horizontal = TRUE)
 </code></pre>
 
-<p><img src="figure/unnamed-chunk-6.png" alt="plot of chunk unnamed-chunk-6"> </p>
+<p><img src="figure/unnamed-chunk-5.png" alt="plot of chunk unnamed-chunk-5"> </p>
 
   </article>
   <!-- Presenter Notes -->
@@ -214,7 +202,7 @@ plot(quartet$x4, quartet$y4, pch = 19,
     
   </hgroup>
   <article>
-    <pre><code class="r">stem(2.54 * singer$height, scale=.8)
+    <pre><code class="r">stem(2.54 * singer$height, scale = 0.8)
 </code></pre>
 
 <pre><code>## 
@@ -240,7 +228,17 @@ plot(quartet$x4, quartet$y4, pch = 19,
     <h2>1. Données univariées : q-plot</h2>
   </hgroup>
   <article>
-    <p>$ q(f) : f $</p>
+    <p>Le quantile $x_f$ d&#39;une variable aléatoire $X$ est $x_f = \lbrace \inf x : F(x) \leq f \rbrace$ où $F$ est la fonction de répartition de $X$.</p>
+
+<p>Pour un échantillon <code>$X_1, \ldots, X_n$</code> de $X$ la fonction de répartition empirique est 
+<code>\[
+   \hat F_n(x) = \sum_{j=1}^n I_{\{X_j \leq x\}}
+\]</code>.
+Alors, la version empirique de $x_f$ on la note $q(f)$.</p>
+
+<ul>
+<li>Grâce au Théorème de Glivenko-Cantelli, on sait que <code>$\sup_x \|\hat F_n(x) - F(x)\| \mapsto 0$</code> donc les quantiles empiriques sont une estimation raisonnable des quantiles théoriques.</li>
+</ul>
 
   </article>
   <!-- Presenter Notes -->
@@ -248,10 +246,27 @@ plot(quartet$x4, quartet$y4, pch = 19,
 
       <slide class="" id="slide-11" style="background:;">
   <hgroup>
-    
+    <h4>Construction des $q(f)$</h4>
   </hgroup>
   <article>
-    <p><img src="figure/unnamed-chunk-8.png" title="plot of chunk unnamed-chunk-8" alt="plot of chunk unnamed-chunk-8" style="display: block; margin: auto;" /></p>
+    <p>Soit </p>
+
+<ul>
+<li><code>$X_{(j)}, j= 1, \ldots, X_{(n)}$</code> l&#39;échantillon ordonné, i.e. 
+<code>$X_{(1)} \leq X_{(2)} \leq \ldots \leq X_{(n)}$</code>.</li>
+<li>les quantités discrètes $f_j = \frac{j - 0.5}{n}$ pour $j=1, \ldots, n$.</li>
+</ul>
+
+<p>Alors, </p>
+
+<ul>
+<li>on considère <code>$q(f_j) = X_{(j)}}$</code> </li>
+<li>les restantes valeurs de la courbe $q(f)$ sont obtenus par interpolation linéaire.</li>
+</ul>
+
+<h4>q-plot</h4>
+
+<p>C&#39;est la réprésentation de $x_{(j)}$ en fonction de $f$.</p>
 
   </article>
   <!-- Presenter Notes -->
@@ -262,7 +277,7 @@ plot(quartet$x4, quartet$y4, pch = 19,
     
   </hgroup>
   <article>
-    <p><img src="figure/unnamed-chunk-9.png" title="plot of chunk unnamed-chunk-9" alt="plot of chunk unnamed-chunk-9" style="display: block; margin: auto;" /></p>
+    <p><img src="figure/unnamed-chunk-7.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" style="display: block; margin: auto;" /></p>
 
   </article>
   <!-- Presenter Notes -->
@@ -270,7 +285,55 @@ plot(quartet$x4, quartet$y4, pch = 19,
 
       <slide class="" id="slide-13" style="background:;">
   <hgroup>
+    
+  </hgroup>
+  <article>
+    <p><img src="figure/unnamed-chunk-8.png" title="plot of chunk unnamed-chunk-8" alt="plot of chunk unnamed-chunk-8" style="display: block; margin: auto;" /></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-14" style="background:;">
+  <hgroup>
     <h2>1. Données univariées : qq-plot</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li>2 ensembles des données univariées: 
+
+<ul>
+<li><code>$X_1, \ldots, X_n$</code></li>
+<li><code>$Y_1, \ldots, X_m$</code></li>
+</ul></li>
+<li>Si 
+
+<ul>
+<li>$m = n$ alors les $f_j$ sont obtenues comme avant</li>
+<li>$m \le n$ alors on obtient les $f_j$ sur $Y$ et pour $X$ on interpole.</li>
+</ul></li>
+</ul>
+
+<p>Pour le diagramme quantile-quantile on répresente les quantiles d&#39;une de variables en fonction des quantiles de l&#39;autre. </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-15" style="background:;">
+  <hgroup>
+    
+  </hgroup>
+  <article>
+    <p><img src="figure/unnamed-chunk-9.png" title="plot of chunk unnamed-chunk-9" alt="plot of chunk unnamed-chunk-9" style="display: block; margin: auto;" /></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-16" style="background:;">
+  <hgroup>
+    <h2>1. Données univariées :  m-d plot</h2>
   </hgroup>
   <article>
     <p><img src="figure/unnamed-chunk-10.png" title="plot of chunk unnamed-chunk-10" alt="plot of chunk unnamed-chunk-10" style="display: block; margin: auto;" /></p>
@@ -279,45 +342,12 @@ plot(quartet$x4, quartet$y4, pch = 19,
   <!-- Presenter Notes -->
 </slide>
 
-      <slide class="" id="slide-14" style="background:;">
-  <hgroup>
-    <h2>1. Données univariées :  m-d plot</h2>
-  </hgroup>
-  <article>
-    <p><img src="figure/unnamed-chunk-11.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" style="display: block; margin: auto;" /></p>
-
-  </article>
-  <!-- Presenter Notes -->
-</slide>
-
-      <slide class="" id="slide-15" style="background:;">
+      <slide class="" id="slide-17" style="background:;">
   <hgroup>
     <h2>1. Données univariées :  qq plots</h2>
   </hgroup>
   <article>
-    <p><img src="figure/unnamed-chunk-12.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" style="display: block; margin: auto;" /></p>
-
-  </article>
-  <!-- Presenter Notes -->
-</slide>
-
-      <slide class="" id="slide-16" style="background:;">
-  <hgroup>
-    
-  </hgroup>
-  <article>
-    <p><img src="figure/unnamed-chunk-13.png" title="plot of chunk unnamed-chunk-13" alt="plot of chunk unnamed-chunk-13" style="display: block; margin: auto;" /></p>
-
-  </article>
-  <!-- Presenter Notes -->
-</slide>
-
-      <slide class="" id="slide-17" style="background:;">
-  <hgroup>
-    
-  </hgroup>
-  <article>
-    <p><img src="figure/unnamed-chunk-14.png" title="plot of chunk unnamed-chunk-14" alt="plot of chunk unnamed-chunk-14" style="display: block; margin: auto;" /></p>
+    <p><img src="figure/unnamed-chunk-11.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" style="display: block; margin: auto;" /></p>
 
   </article>
   <!-- Presenter Notes -->
@@ -328,7 +358,29 @@ plot(quartet$x4, quartet$y4, pch = 19,
     
   </hgroup>
   <article>
-    <p><img src="figure/unnamed-chunk-15.png" title="plot of chunk unnamed-chunk-15" alt="plot of chunk unnamed-chunk-15" style="display: block; margin: auto;" /></p>
+    <p><img src="figure/unnamed-chunk-12.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" style="display: block; margin: auto;" /></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-19" style="background:;">
+  <hgroup>
+    
+  </hgroup>
+  <article>
+    <p><img src="figure/unnamed-chunk-13.png" title="plot of chunk unnamed-chunk-13" alt="plot of chunk unnamed-chunk-13" style="display: block; margin: auto;" /></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-20" style="background:;">
+  <hgroup>
+    
+  </hgroup>
+  <article>
+    <p><img src="figure/unnamed-chunk-14.png" title="plot of chunk unnamed-chunk-14" alt="plot of chunk unnamed-chunk-14" style="display: block; margin: auto;" /></p>
 
   </article>
   <!-- Presenter Notes -->
